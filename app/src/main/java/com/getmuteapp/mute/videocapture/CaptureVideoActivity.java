@@ -52,12 +52,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         }
 
         if(camera == null) {
-            if(findFrontFacingCamera() == 1) {
-                releaseCamera();
-                chooseCamera();
-            } else {
-                Toast.makeText(context, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG).show();
-            }
+            chooseCamera();
         }
     }
 
@@ -91,6 +86,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
                     // switch camera, from the front and the back and vice versa
 
                     releaseCamera();
+                    cameraFront = !cameraFront;
                     chooseCamera();
                 } else {
                     Toast toast = Toast.makeText(context, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG);
@@ -130,20 +126,24 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         }
     };
 
-    //Push
     public void chooseCamera() {
-        if(cameraFront) {
-            int cameraId = findBackFacingCamera();
-            if(cameraId >= 0) {
-                camera = Camera.open(cameraId);
-                cameraPreview.refreshCamera(camera);
+        if(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            if (!cameraFront) {
+                int cameraId = findBackFacingCamera();
+                if (cameraId >= 0) {
+                    camera = Camera.open(cameraId);
+                    cameraPreview.refreshCamera(camera);
+                }
+            } else {
+                int cameraId = findFrontFacingCamera();
+                if (cameraId >= 0) {
+                    camera = Camera.open(cameraId);
+                    cameraPreview.refreshCamera(camera);
+                }
             }
-        } else {
-            int cameraId = findFrontFacingCamera();
-            if(cameraId >= 0) {
-                camera = Camera.open(cameraId);
-                cameraPreview.refreshCamera(camera);
-            }
+        }
+        else {
+            Toast.makeText(context, "Please remove the app gracefully", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -170,7 +170,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         mediaRecorder.setVideoEncodingBitRate(profile.videoBitRate);
         mediaRecorder.setVideoEncoder(profile.videoCodec);
 
-        mediaRecorder.setOutputFile("/sdcard/Download/myvideo.mp4");
+        mediaRecorder.setOutputFile("/storage/emulated/0/Download/myvideo.mp4");
         mediaRecorder.setMaxDuration(5000);
         mediaRecorder.setOnInfoListener(this);
         try {
@@ -203,6 +203,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         int cameraId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
 
+        Log.d(LOG_TAG, "Number of cameras in findFrontFacingCamera(): " + numberOfCameras);
         for(int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i,info);
@@ -219,6 +220,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         int cameraId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
 
+        Log.d(LOG_TAG, "Number of cameras in findBackFacingCamera(): " + numberOfCameras);
         for(int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i,info);

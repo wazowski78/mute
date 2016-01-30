@@ -83,7 +83,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         setCamera(camera);
-        camera.setDisplayOrientation(90);
         startPreview();
     }
 
@@ -98,6 +97,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void setCamera(Camera camera) {
+        camera.setDisplayOrientation(90);
         this.camera = camera;
     }
 
