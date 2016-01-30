@@ -19,7 +19,7 @@ import com.getmuteapp.mute.R;
 
 import java.io.IOException;
 
-//TODO: http://examples.javacodegeeks.com/android/core/android-video-capture-example/
+//TODO: Resolution ve autofocus işlerine bakmak gerek.
 
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
 
