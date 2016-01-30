@@ -130,6 +130,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         }
     };
 
+    //Push
     public void chooseCamera() {
         if(cameraFront) {
             int cameraId = findBackFacingCamera();
