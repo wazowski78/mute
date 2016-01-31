@@ -27,8 +27,8 @@ import java.io.IOException;
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
 
     private static final String LOG_TAG = CaptureVideoActivity.class.getSimpleName();
-    private static final int PERMISSION_REQUEST_CAMERA = 0;
-    private static final int PERMISSION_GROUP_REQUEST_STORAGE = 1;
+    private static final int PERMISSION_REQUEST = 0;
+
 
     private Camera camera;
     private CameraPreview cameraPreview;
@@ -51,15 +51,13 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
 
     private void takePermissions() {
         if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission.CAMERA},
-                    PERMISSION_REQUEST_CAMERA);
-        }
-
-        if(ContextCompat.checkSelfPermission(context,Manifest.permission_group.STORAGE) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission_group.STORAGE},
-                    PERMISSION_REQUEST_CAMERA);
+                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context,
+                Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(CaptureVideoActivity.this,
+                    new String[]{
+                            Manifest.permission.CAMERA,
+                    Manifest.permission_group.STORAGE},
+                    PERMISSION_REQUEST);
         }
     }
 
@@ -122,14 +120,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
             if(recording) {
                 stopMediaRecorder();
             } else {
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission_group.STORAGE) ==
-                        PackageManager.PERMISSION_GRANTED) {
-                    performCapturingAction();
-                } else {
-                    ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{
-                            Manifest.permission_group.STORAGE
-                    },PERMISSION_GROUP_REQUEST_STORAGE);
-                }
+                performCapturingAction();
             }
         }
     };
