@@ -100,10 +100,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         @Override
         public void onClick(View v) {
             if(recording) {
-                mediaRecorder.stop();
-                releaseMediaRecorder();
-                Toast.makeText(CaptureVideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
-                recording = false;
+                stopMediaRecorder();
             } else {
                 if(!prepareMediaRecorder()) {
                     Toast.makeText(CaptureVideoActivity.this, "Fail in prepareMediaRecorder()!\n - Ended -", Toast.LENGTH_LONG).show();
@@ -233,11 +230,18 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         return cameraId;
     }
 
+    private void stopMediaRecorder() {
+        mediaRecorder.stop();
+        releaseMediaRecorder();
+        Toast.makeText(CaptureVideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
+        recording = false;
+    }
+
 
     @Override
     public void onInfo(MediaRecorder mr, int what, int extra) {
         if (what == MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED) {
-            mr.stop();
+            stopMediaRecorder();
         }
     }
 }
