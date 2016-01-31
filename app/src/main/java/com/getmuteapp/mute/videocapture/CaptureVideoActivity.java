@@ -167,7 +167,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         mediaRecorder.setVideoEncodingBitRate(profile.videoBitRate);
         mediaRecorder.setVideoEncoder(profile.videoCodec);
 
-        mediaRecorder.setOutputFile("/storage/emulated/0/Download/myvideo.mp4");
+        mediaRecorder.setOutputFile(context.getExternalFilesDir(null).getAbsolutePath()+"/myvideo.mp4");
         mediaRecorder.setMaxDuration(5000);
         mediaRecorder.setOnInfoListener(this);
         try {
