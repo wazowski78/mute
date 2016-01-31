@@ -1,11 +1,14 @@
 package com.getmuteapp.mute.videocapture;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +27,8 @@ import java.io.IOException;
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
 
     private static final String LOG_TAG = CaptureVideoActivity.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_CAMERA = 0;
+    private static final int PERMISSION_GROUP_REQUEST_STORAGE = 1;
 
     private Camera camera;
     private CameraPreview cameraPreview;
@@ -52,7 +57,13 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         }
 
         if(camera == null) {
-            chooseCamera();
+            if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                chooseCamera();
+            } else {
+                ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission.CAMERA},
+                        PERMISSION_REQUEST_CAMERA);
+            }
         }
     }
 
@@ -102,23 +113,14 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
             if(recording) {
                 stopMediaRecorder();
             } else {
-                if(!prepareMediaRecorder()) {
-                    Toast.makeText(CaptureVideoActivity.this, "Fail in prepareMediaRecorder()!\n - Ended -", Toast.LENGTH_LONG).show();
-                    finish();
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission_group.STORAGE) ==
+                        PackageManager.PERMISSION_GRANTED) {
+                    performCapturingAction();
+                } else {
+                    ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{
+                            Manifest.permission_group.STORAGE
+                    },PERMISSION_GROUP_REQUEST_STORAGE);
                 }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            mediaRecorder.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                recording = true;
             }
         }
     };
@@ -230,12 +232,69 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         return cameraId;
     }
 
+    private void performCapturingAction() {
+        if (!prepareMediaRecorder()) {
+            Toast.makeText(CaptureVideoActivity.this, "Fail in prepareMediaRecorder()!\n - Ended -", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mediaRecorder.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        recording = true;
+    }
+
     private void stopMediaRecorder() {
         mediaRecorder.stop();
         releaseMediaRecorder();
         Toast.makeText(CaptureVideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
         recording = false;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CAMERA: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    chooseCamera();
+
+                } else {
+
+                    finish();
+                }
+                break;
+            }
+
+            case PERMISSION_GROUP_REQUEST_STORAGE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    performCapturingAction();
+
+                } else {
+
+                    finish();
+                }
+                break;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
 
 
     @Override
