@@ -46,6 +46,21 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         context = this;
         initialize();
+        takePermissions();
+    }
+
+    private void takePermissions() {
+        if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission.CAMERA},
+                    PERMISSION_REQUEST_CAMERA);
+        }
+
+        if(ContextCompat.checkSelfPermission(context,Manifest.permission_group.STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission_group.STORAGE},
+                    PERMISSION_REQUEST_CAMERA);
+        }
     }
 
     @Override
@@ -57,13 +72,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         }
 
         if(camera == null) {
-            if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                chooseCamera();
-            } else {
-                ActivityCompat.requestPermissions(CaptureVideoActivity.this, new String[]{Manifest.permission.CAMERA},
-                        PERMISSION_REQUEST_CAMERA);
-            }
+            chooseCamera();
         }
     }
 
@@ -262,36 +271,11 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CAMERA: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (!(grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
 
-                    chooseCamera();
+            finish();
 
-                } else {
-
-                    finish();
-                }
-                break;
-            }
-
-            case PERMISSION_GROUP_REQUEST_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    performCapturingAction();
-
-                } else {
-
-                    finish();
-                }
-                break;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
