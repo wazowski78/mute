@@ -27,7 +27,7 @@ import java.io.IOException;
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
 
     private static final String LOG_TAG = CaptureVideoActivity.class.getSimpleName();
-    private static final int PERMISSION_REQUEST = 0;
+    private static final int PERMISSION_REQUEST_STORAGE = 1;
 
 
     private Camera camera;
@@ -46,19 +46,6 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         context = this;
         initialize();
-        takePermissions();
-    }
-
-    private void takePermissions() {
-        if(ContextCompat.checkSelfPermission(context,Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(context,
-                Manifest.permission_group.STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(CaptureVideoActivity.this,
-                    new String[]{
-                            Manifest.permission.CAMERA,
-                    Manifest.permission_group.STORAGE},
-                    PERMISSION_REQUEST);
-        }
     }
 
     @Override
@@ -120,7 +107,14 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
             if(recording) {
                 stopMediaRecorder();
             } else {
-                performCapturingAction();
+                if(ContextCompat.checkSelfPermission(context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    performCapturingAction();
+                } else {
+                    ActivityCompat.requestPermissions(CaptureVideoActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            PERMISSION_REQUEST_STORAGE);
+                }
             }
         }
     };
@@ -162,7 +156,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
 
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
         mediaRecorder.setOutputFormat(profile.fileFormat);
         mediaRecorder.setVideoFrameRate(profile.videoFrameRate);
         mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
@@ -262,11 +256,16 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-        if (!(grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-
-            finish();
-
+        switch (requestCode) {
+            case PERMISSION_REQUEST_STORAGE: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    performCapturingAction();
+                } else {
+                    finish();
+                }
+                break;
+            }
         }
     }
 
