@@ -35,15 +35,14 @@ public class UploadVideoActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = UploadVideoActivity.class.getSimpleName();
 
-    @Bind(R.id.container)
-    ViewGroup container;
+    @Bind(R.id.container) ViewGroup container;
+    @Bind(R.id.upload_button) Button uploadButton;
+    @Bind(R.id.txtPercentage) TextView percentage;
+    @Bind(R.id.progressBar)   ProgressBar progressBar;
+    @Bind(R.id.videoPreview)  VideoView videoView;
+
     private Context context;
-    private Button uploadButton;
-    private TextView percentage;
-    private ProgressBar progressBar;
-    private VideoView videoView;
     private String filePath = null;
-    long totalSize = 0;
 
     private Map<String, UploadProgressViewHolder> uploadProgressHolders = new HashMap<>();
 
@@ -100,12 +99,11 @@ public class UploadVideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload_video);
+        ButterKnife.bind(this);
         context = this;
-        configureUIElements();
         Intent i = getIntent();
         filePath = i.getStringExtra(CaptureVideoActivity.FILE_PATH);
         Log.d(LOG_TAG, filePath);
-        ButterKnife.bind(this);
 
         if(filePath != null) {
             previewVideo();
@@ -115,18 +113,21 @@ public class UploadVideoActivity extends AppCompatActivity {
         }
     }
 
-    private void configureUIElements() {
-        uploadButton = (Button) findViewById(R.id.upload_button);
-        percentage = (TextView) findViewById(R.id.txtPercentage);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        videoView = (VideoView) findViewById(R.id.videoPreview);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        uploadReceiver.register(this);
+    }
 
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                handleUpload();
-            }
-        });
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uploadReceiver.unregister(this);
+    }
+
+    @OnClick(R.id.upload_button)
+    void onUploadClicked() {
+        handleUpload();
     }
 
     private void handleUpload() {

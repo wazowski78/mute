@@ -23,6 +23,10 @@ import com.getmuteapp.mute.videoupload.UploadVideoActivity;
 
 import java.io.IOException;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 //TODO: Resolution ve autofocus işlerine bakmak gerek.
 
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
@@ -32,23 +36,28 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     private static final String LOG_TAG = CaptureVideoActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_STORAGE = 1;
 
+    @Bind(R.id.camera_preview) LinearLayout cameraPreviewLayout;
+    @Bind(R.id.button_capture) Button capture;
+    @Bind(R.id.button_change_camera) Button switchCamera;
 
     private Camera camera;
     private CameraPreview cameraPreview;
     private MediaRecorder mediaRecorder;
     private Context context;
-    private LinearLayout cameraPreviewLayout;
+
     private boolean cameraFront = false;
     boolean recording = false;
-    private Button capture, switchCamera;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_capture_video);
+        ButterKnife.bind(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         context = this;
-        initialize();
+
+        cameraPreview = new CameraPreview(context, camera);
+        cameraPreviewLayout.addView(cameraPreview);
     }
 
     @Override
@@ -70,57 +79,39 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         releaseCamera();
     }
 
-    public void initialize() {
-        cameraPreviewLayout = (LinearLayout) findViewById(R.id.camera_preview);
+    @OnClick(R.id.button_change_camera)
+    void onChangeClicked() {
+        if (!recording) {
+            int camerasNumber = Camera.getNumberOfCameras();
+            if (camerasNumber > 1) {
+                // release the old camera instance
+                // switch camera, from the front and the back and vice versa
 
-        cameraPreview = new CameraPreview(context, camera);
-        cameraPreviewLayout.addView(cameraPreview);
-
-        capture = (Button) findViewById(R.id.button_capture);
-        capture.setOnClickListener(captureListener);
-
-        switchCamera = (Button) findViewById(R.id.button_change_camera);
-        switchCamera.setOnClickListener(switchCameraListener);
+                releaseCamera();
+                cameraFront = !cameraFront;
+                chooseCamera();
+            } else {
+                Toast toast = Toast.makeText(context, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG);
+                toast.show();
+            }
+        }
     }
 
-    View.OnClickListener switchCameraListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            // get the number of cameras
-            if (!recording) {
-                int camerasNumber = Camera.getNumberOfCameras();
-                if (camerasNumber > 1) {
-                    // release the old camera instance
-                    // switch camera, from the front and the back and vice versa
-
-                    releaseCamera();
-                    cameraFront = !cameraFront;
-                    chooseCamera();
-                } else {
-                    Toast toast = Toast.makeText(context, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG);
-                    toast.show();
-                }
-            }
-        }
-    };
-
-    View.OnClickListener captureListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(recording) {
-                stopMediaRecorder();
+    @OnClick(R.id.button_capture)
+    void onCaptureClicked() {
+        if(recording) {
+            stopMediaRecorder();
+        } else {
+            if(ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                performCapturingAction();
             } else {
-                if(ContextCompat.checkSelfPermission(context,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    performCapturingAction();
-                } else {
-                    ActivityCompat.requestPermissions(CaptureVideoActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            PERMISSION_REQUEST_STORAGE);
-                }
+                ActivityCompat.requestPermissions(CaptureVideoActivity.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_STORAGE);
             }
         }
-    };
+    }
 
     public void chooseCamera() {
         if(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {

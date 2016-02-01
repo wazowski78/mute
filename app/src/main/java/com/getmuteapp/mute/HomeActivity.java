@@ -12,28 +12,33 @@ import android.widget.Button;
 
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class HomeActivity extends AppCompatActivity {
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_CAMERA = 0;
+
+    @Bind(R.id.go_video) Button goVideoButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Button goVideoButton = (Button) findViewById(R.id.go_video);
-        goVideoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
-                        PackageManager.PERMISSION_GRANTED) {
-                    goHomeActivity();
-                } else {
-                    ActivityCompat.requestPermissions(HomeActivity.this,
-                            new String[]{
-                                    Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
-                }
-            }
-        });
+        ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.go_video)
+    void onGoVideoClicked() {
+        if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
+            goHomeActivity();
+        } else {
+            ActivityCompat.requestPermissions(HomeActivity.this,
+                    new String[]{
+                            Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+        }
     }
 
     private void goHomeActivity() {
