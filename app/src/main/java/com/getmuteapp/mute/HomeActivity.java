@@ -20,17 +20,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Button button = (Button) findViewById(R.id.go_video);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button goVideoButton = (Button) findViewById(R.id.go_video);
+        goVideoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
+                if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
                         PackageManager.PERMISSION_GRANTED) {
                     goHomeActivity();
                 } else {
                     ActivityCompat.requestPermissions(HomeActivity.this,
                             new String[]{
-                                    Manifest.permission.CAMERA},PERMISSION_REQUEST_CAMERA);
+                                    Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
                 }
             }
         });

@@ -2,7 +2,7 @@ package com.getmuteapp.mute.videocapture;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
@@ -19,12 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.getmuteapp.mute.R;
+import com.getmuteapp.mute.videoupload.UploadVideoActivity;
 
 import java.io.IOException;
 
 //TODO: Resolution ve autofocus işlerine bakmak gerek.
 
 public class CaptureVideoActivity extends AppCompatActivity implements MediaRecorder.OnInfoListener{
+
+    public static final String FILE_PATH = "FILE_PATH";
 
     private static final String LOG_TAG = CaptureVideoActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_STORAGE = 1;
@@ -251,6 +254,9 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         releaseMediaRecorder();
         Toast.makeText(CaptureVideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
         recording = false;
+        Intent i = new Intent(CaptureVideoActivity.this, UploadVideoActivity.class);
+        i.putExtra(FILE_PATH,context.getExternalFilesDir(null).getAbsolutePath()+"/myvideo.mp4");
+        startActivity(i);
     }
 
     @Override
