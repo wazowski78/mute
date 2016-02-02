@@ -109,7 +109,7 @@ public class UploadVideoActivity extends AppCompatActivity {
             previewVideo();
         } else {
             Toast.makeText(this,
-                    "Sorry, file path is missing!", Toast.LENGTH_LONG).show();
+                    R.string.file_path_missing, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -135,13 +135,13 @@ public class UploadVideoActivity extends AppCompatActivity {
         final String paramNameString = "video";
 
         try {
-            final String filename = "myvideo.mp4";
+            final String filename = getFilename(filePath);
 
             String uploadID = new MultipartUploadRequest(context, serverUrlString)
                     .addFileToUpload(filePath, paramNameString)
                     .setNotificationConfig(getNotificationConfig(filename))
                     .setCustomUserAgent("UserAgent")
-                    .setAutoDeleteFilesAfterSuccessfulUpload(false)
+                    .setAutoDeleteFilesAfterSuccessfulUpload(true)
                     .setUsesFixedLengthStreamingMode(false)
                     .setMaxRetries(2)
                     .startUpload();
@@ -150,16 +150,21 @@ public class UploadVideoActivity extends AppCompatActivity {
 
             // these are the different exceptions that may be thrown
         } catch (FileNotFoundException exc) {
-            showToast(exc.getMessage());
+            exc.printStackTrace();
         } catch (IllegalArgumentException exc) {
-            showToast("Missing some arguments. " + exc.getMessage());
+            exc.printStackTrace();
         } catch (MalformedURLException exc) {
-            showToast(exc.getMessage());
+            exc.printStackTrace();
         }
     }
 
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    private String getFilename(String filepath) {
+        if (filepath == null)
+            return null;
+
+        final String[] filepathParts = filepath.split("/");
+
+        return filepathParts[filepathParts.length - 1];
     }
 
     private void addUploadToList(String uploadID, String filename) {

@@ -7,7 +7,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
@@ -33,7 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     void onGoVideoClicked() {
         if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_GRANTED) {
-            goHomeActivity();
+            goCaptureActivity();
         } else {
             ActivityCompat.requestPermissions(HomeActivity.this,
                     new String[]{
@@ -41,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void goHomeActivity() {
+    private void goCaptureActivity() {
         Intent i = new Intent(HomeActivity.this, CaptureVideoActivity.class);
         startActivity(i);
     }
@@ -53,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
             case PERMISSION_REQUEST_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    goHomeActivity();
+                    goCaptureActivity();
                 } else {
                     finish();
                 }

@@ -44,7 +44,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     private CameraPreview cameraPreview;
     private MediaRecorder mediaRecorder;
     private Context context;
-
+    private String filePath = null;
     private boolean cameraFront = false;
     boolean recording = false;
 
@@ -64,7 +64,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     public void onResume() {
         super.onResume();
         if(!hasCamera(context)) {
-            Toast.makeText(context, "Your device has no camera!", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.no_camera, Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -91,7 +91,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
                 cameraFront = !cameraFront;
                 chooseCamera();
             } else {
-                Toast toast = Toast.makeText(context, "Sorry, your phone has only one camera!", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, R.string.one_camera, Toast.LENGTH_LONG);
                 toast.show();
             }
         }
@@ -130,7 +130,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
             }
         }
         else {
-            Toast.makeText(context, "Please remove the app gracefully", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.no_camera, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -147,17 +147,18 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         mediaRecorder = new MediaRecorder();
         camera.unlock();
         mediaRecorder.setCamera(camera);
+        createFilePath();
 
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_LOW);
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
         mediaRecorder.setOutputFormat(profile.fileFormat);
         mediaRecorder.setVideoFrameRate(profile.videoFrameRate);
         mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
         mediaRecorder.setVideoEncodingBitRate(profile.videoBitRate);
         mediaRecorder.setVideoEncoder(profile.videoCodec);
 
-        mediaRecorder.setOutputFile(context.getExternalFilesDir(null).getAbsolutePath()+"/myvideo.mp4");
+        mediaRecorder.setOutputFile(filePath);
         mediaRecorder.setMaxDuration(5000);
         mediaRecorder.setOnInfoListener(this);
         try {
@@ -190,7 +191,6 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         int cameraId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
 
-        Log.d(LOG_TAG, "Number of cameras in findFrontFacingCamera(): " + numberOfCameras);
         for(int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i,info);
@@ -207,7 +207,6 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         int cameraId = -1;
         int numberOfCameras = Camera.getNumberOfCameras();
 
-        Log.d(LOG_TAG, "Number of cameras in findBackFacingCamera(): " + numberOfCameras);
         for(int i = 0; i < numberOfCameras; i++) {
             Camera.CameraInfo info = new Camera.CameraInfo();
             Camera.getCameraInfo(i,info);
@@ -222,6 +221,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
 
     private void performCapturingAction() {
         if (!prepareMediaRecorder()) {
+            //TODO: Bu toasta bi çözüm bulalım
             Toast.makeText(CaptureVideoActivity.this, "Fail in prepareMediaRecorder()!\n - Ended -", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -243,11 +243,21 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
     private void stopMediaRecorder() {
         mediaRecorder.stop();
         releaseMediaRecorder();
-        Toast.makeText(CaptureVideoActivity.this, "Video captured!", Toast.LENGTH_LONG).show();
+        Toast.makeText(CaptureVideoActivity.this, R.string.video_captured, Toast.LENGTH_LONG).show();
         recording = false;
         Intent i = new Intent(CaptureVideoActivity.this, UploadVideoActivity.class);
-        i.putExtra(FILE_PATH,context.getExternalFilesDir(null).getAbsolutePath()+"/myvideo.mp4");
+        i.putExtra(FILE_PATH, filePath);
         startActivity(i);
+    }
+
+    private void createFilePath() {
+        long time = System.currentTimeMillis();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(context.getExternalFilesDir(null).getAbsolutePath());
+        stringBuilder.append("/");
+        stringBuilder.append(time);
+        stringBuilder.append(".mp4");
+        filePath = stringBuilder.toString();
     }
 
     @Override
