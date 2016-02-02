@@ -14,6 +14,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.getmuteapp.mute.R;
+import com.getmuteapp.mute.utils.Compress;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -21,10 +22,13 @@ import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -136,6 +140,16 @@ public class UploadVideoActivity extends AppCompatActivity {
 
         try {
             final String filename = getFilename(filePath);
+            Log.d(LOG_TAG,"FILE PATH: "+filePath);
+            String[] fileToCompress = new String[]{filePath};
+            Compress compress = new Compress(fileToCompress);
+            compress.zip();
+            filePath = compress.getZipFile();
+            /* To make sure if it is a valid zip file or not
+            File file = new File(filePath);
+            if(isValid(file)){
+                Toast.makeText(this,"VALID",Toast.LENGTH_LONG).show();
+            }*/
 
             String uploadID = new MultipartUploadRequest(context, serverUrlString)
                     .addFileToUpload(filePath, paramNameString)
@@ -155,6 +169,24 @@ public class UploadVideoActivity extends AppCompatActivity {
             exc.printStackTrace();
         } catch (MalformedURLException exc) {
             exc.printStackTrace();
+        }
+    }
+
+    static boolean isValid(final File file) {
+        ZipFile zipfile = null;
+        try {
+            zipfile = new ZipFile(file);
+            return true;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            try {
+                if (zipfile != null) {
+                    zipfile.close();
+                    zipfile = null;
+                }
+            } catch (IOException e) {
+            }
         }
     }
 
