@@ -149,14 +149,15 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         mediaRecorder.setCamera(camera);
         createFilePath();
 
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-        mediaRecorder.setOutputFormat(profile.fileFormat);
+        mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_480P));
+        /*mediaRecorder.setOutputFormat(profile.fileFormat);
         mediaRecorder.setVideoFrameRate(profile.videoFrameRate);
         mediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
         mediaRecorder.setVideoEncodingBitRate(profile.videoBitRate);
-        mediaRecorder.setVideoEncoder(profile.videoCodec);
+        mediaRecorder.setVideoEncoder(profile.videoCodec);*/
 
         mediaRecorder.setOutputFile(filePath);
         mediaRecorder.setMaxDuration(5000);
