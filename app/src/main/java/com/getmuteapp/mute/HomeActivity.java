@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.getmuteapp.mute.login.LoginActivity;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
 import butterknife.Bind;
@@ -20,6 +21,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CAMERA = 0;
 
     @Bind(R.id.go_video) Button goVideoButton;
+    @Bind(R.id.go_login) Button goLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,12 @@ public class HomeActivity extends AppCompatActivity {
                     new String[]{
                             Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
         }
+    }
+
+    @OnClick(R.id.go_login)
+    void onGoLoginClicked() {
+        Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+        startActivity(intent);
     }
 
     private void goCaptureActivity() {

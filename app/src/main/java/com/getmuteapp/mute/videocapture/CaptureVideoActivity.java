@@ -11,8 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -160,7 +158,7 @@ public class CaptureVideoActivity extends AppCompatActivity implements MediaReco
         mediaRecorder.setVideoEncoder(profile.videoCodec);*/
 
         mediaRecorder.setOutputFile(filePath);
-        mediaRecorder.setMaxDuration(5000);
+        mediaRecorder.setMaxDuration(15000);
         mediaRecorder.setOnInfoListener(this);
         try {
             mediaRecorder.prepare();
