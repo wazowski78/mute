@@ -30,4 +30,5 @@ dependencies {
     compile 'net.gotev:uploadservice:2.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
+    compile 'com.android.support:support-v4:23.1.1'
 }

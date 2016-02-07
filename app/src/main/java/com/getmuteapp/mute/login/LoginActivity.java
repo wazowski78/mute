@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -36,12 +38,20 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //This must be called before the super.onCreate()
+        makeFullScreen();
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this);
         context = this;
         setContentView(R.layout.activity_login);
         setViewConfigurations();
         setClickOptions();
+    }
+
+    private void makeFullScreen() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     @Override

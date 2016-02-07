@@ -11,4 +11,8 @@
     <string name="one_camera">Sorry, your phone has only one camera!</string>
     <string name="video_captured">Video captured!</string>
     <string name="file_path_missing">Sorry, file path is missing!</string>
+
+    <string name="title_activity_temp">TempActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
