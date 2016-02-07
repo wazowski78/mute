@@ -2,11 +2,22 @@ package com.getmuteapp.mute.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.VideoView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,6 +44,8 @@ public class LoginActivity extends AppCompatActivity {
     private LoginButton facebookLoginButton;
     private CallbackManager callbackManager;
     private Context context;
+    VideoView videoView = null;
+    ImageView imageView;
 
     public static final String ACTION_LOGIN = "ACTION_LOGIN";
 
@@ -61,8 +74,40 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setViewConfigurations() {
+        videoView = (VideoView) findViewById(R.id.background_video_view);
+        imageView = (ImageView) findViewById(R.id.logo);
+        previewVideo();
         facebookLoginButton = (LoginButton) findViewById(R.id.facebook_login_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+    }
+
+    private void previewVideo() {
+        videoView.setVisibility(View.VISIBLE);
+        Uri video = Uri.parse("android.resource://" + getPackageName() + "/raw/background_video_login");
+        videoView.setVideoURI(video);
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int height = displaymetrics.heightPixels;
+        int width = displaymetrics.widthPixels;
+        ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
+        layoutParams.width = width;
+        layoutParams.height = height;
+        videoView.setLayoutParams(layoutParams);
+        int imageWidth = width/2;
+        int imageHeight = width/2;
+        ViewGroup.LayoutParams imageLayoutParams = imageView.getLayoutParams();
+        imageLayoutParams.width = imageWidth;
+        imageLayoutParams.height = imageHeight;
+        imageView.setLayoutParams(imageLayoutParams);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                mp.setVolume(0,0);
+
+            }
+        });
+        videoView.start();
     }
 
     private void setClickOptions() {

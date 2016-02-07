@@ -35,7 +35,10 @@
             android:name=".videocapture.CaptureVideoActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".videoupload.UploadVideoActivity" />
-        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".login.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
