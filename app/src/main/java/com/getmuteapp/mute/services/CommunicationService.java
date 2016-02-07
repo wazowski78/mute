@@ -21,7 +21,7 @@ import java.net.URL;
 public class CommunicationService extends IntentService {
 
     private static final String LOG_TAG = CommunicationService.class.getSimpleName();
-    private static final String HOST = "http://192.168.1.6:9000";
+    private static final String HOST = "http://192.168.0.15:9000";
     private static final String HOST_TAG = "HOST";
     private static final String DATA = "DATA";
 
@@ -48,7 +48,7 @@ public class CommunicationService extends IntentService {
                 case LoginActivity.ACTION_LOGIN:
                     Intent loginBroadcastIntent = new Intent(ACTION_LOGIN_COMPLETED);
                     loginBroadcastIntent.putExtra(LoginActionReceiver.LOGIN_RESPONSE,
-                            postData(data,host+"/endpoint"));//TODO: Dummy endpoint
+                            postData(data,host+"/newUser"));//TODO: Dummy endpoint
                     sendBroadcast(loginBroadcastIntent);
                     break;
             }
@@ -63,7 +63,7 @@ public class CommunicationService extends IntentService {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
-            con.setRequestProperty("Accept-Language", "UTF-8");
+            con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             wr.writeBytes(urlparameters);
