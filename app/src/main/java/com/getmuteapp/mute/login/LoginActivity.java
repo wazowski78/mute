@@ -2,20 +2,16 @@ package com.getmuteapp.mute.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
@@ -92,22 +88,26 @@ public class LoginActivity extends AppCompatActivity {
         ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
         layoutParams.width = width;
         layoutParams.height = height;
+        setImageSize(width);
         videoView.setLayoutParams(layoutParams);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+                mp.setVolume(0,0);
+            }
+        });
+        videoView.start();
+    }
+
+    private void setImageSize(int width) {
+
         int imageWidth = width/2;
         int imageHeight = width/2;
         ViewGroup.LayoutParams imageLayoutParams = imageView.getLayoutParams();
         imageLayoutParams.width = imageWidth;
         imageLayoutParams.height = imageHeight;
         imageView.setLayoutParams(imageLayoutParams);
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                mp.setLooping(true);
-                mp.setVolume(0,0);
-
-            }
-        });
-        videoView.start();
     }
 
     private void setClickOptions() {

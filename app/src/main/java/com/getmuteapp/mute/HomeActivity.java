@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.getmuteapp.mute.home.HomeScreenActivity;
 import com.getmuteapp.mute.login.LoginActivity;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
@@ -22,6 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Bind(R.id.go_video) Button goVideoButton;
     @Bind(R.id.go_login) Button goLoginButton;
+    @Bind(R.id.go_home_screen) Button goHomeScreenButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,12 @@ public class HomeActivity extends AppCompatActivity {
     void onGoLoginClicked() {
         Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
         startActivity(intent);
+    }
+
+    @OnClick(R.id.go_home_screen)
+    void onGoHomeScreenClicked() {
+        Intent homeIntent = new Intent(HomeActivity.this, HomeScreenActivity.class);
+        startActivity(homeIntent);
     }
 
     private void goCaptureActivity() {

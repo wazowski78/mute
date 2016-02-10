@@ -21,7 +21,7 @@ import java.net.URL;
 public class CommunicationService extends IntentService {
 
     private static final String LOG_TAG = CommunicationService.class.getSimpleName();
-    private static final String HOST = "http://192.168.0.15:9000";
+    private static final String HOST = "http://192.168.1.2:9000";
     private static final String HOST_TAG = "HOST";
     private static final String DATA = "DATA";
 
@@ -48,7 +48,7 @@ public class CommunicationService extends IntentService {
                 case LoginActivity.ACTION_LOGIN:
                     Intent loginBroadcastIntent = new Intent(ACTION_LOGIN_COMPLETED);
                     loginBroadcastIntent.putExtra(LoginActionReceiver.LOGIN_RESPONSE,
-                            postData(data,host+"/newUser"));//TODO: Dummy endpoint
+                            postData(data,host+"/newUser"));
                     sendBroadcast(loginBroadcastIntent);
                     break;
             }
@@ -72,6 +72,12 @@ public class CommunicationService extends IntentService {
 
             int responseCode = con.getResponseCode();
             Log.d("RESPONSECODE", responseCode + "");
+
+            if(responseCode == 400) {
+                return "{\"response\":\"BadRequest\"}";
+            } else if(responseCode == 500) {
+                return "{\"response\":\"InternalServer\"}";
+            }
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
