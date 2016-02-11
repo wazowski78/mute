@@ -54,6 +54,8 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             ImageView userProfilePic = (ImageView) view.findViewById(R.id.user_profile_pic);
             MuteVideoView postContent = (MuteVideoView) view.findViewById(R.id.post_content);
             TextView title = (TextView) view.findViewById(R.id.post_title);
+            TextView numberOfAnswers = (TextView) view.findViewById(R.id.post_number_of_answers);
+            TextView date = (TextView) view.findViewById(R.id.post_date);
 
             if(userName != null) {
                 userName.setText(post.getUserName());
@@ -86,6 +88,14 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             if(title != null) {
                 title.setText(post.getTitle());
                 //title.setHeight(postContent.getWidth()/7);
+            }
+
+            if(numberOfAnswers != null) {
+                numberOfAnswers.setText("9 answers");
+            }
+
+            if(date != null) {
+                date.setText("9h");
             }
 
         }
