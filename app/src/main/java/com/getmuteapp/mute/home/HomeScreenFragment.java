@@ -17,9 +17,7 @@ import com.getmuteapp.mute.model.Post;
 import java.io.File;
 import java.util.ArrayList;
 
-/**
- * Created by anil on 10/02/16.
- */
+
 public class HomeScreenFragment extends ListFragment {
     private static final String LOG_TAG = HomeScreenFragment.class.getSimpleName();
 

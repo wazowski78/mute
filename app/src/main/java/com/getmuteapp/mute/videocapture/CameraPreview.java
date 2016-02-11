@@ -2,6 +2,7 @@ package com.getmuteapp.mute.videocapture;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.hardware.Camera;
 import android.view.SurfaceHolder;

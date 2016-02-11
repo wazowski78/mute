@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <VideoView
+    <com.getmuteapp.mute.home.MuteVideoView
         android:id="@+id/post_content"
         android:layout_width="match_parent"
         android:layout_height="100dp"

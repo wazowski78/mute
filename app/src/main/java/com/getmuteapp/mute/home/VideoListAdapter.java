@@ -52,7 +52,7 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             //TODO: Burada gerekli viewlar assign edilecek.
             TextView userName = (TextView) view.findViewById(R.id.user_name);
             ImageView userProfilePic = (ImageView) view.findViewById(R.id.user_profile_pic);
-            final VideoView postContent = (VideoView) view.findViewById(R.id.post_content);
+            MuteVideoView postContent = (MuteVideoView) view.findViewById(R.id.post_content);
             TextView title = (TextView) view.findViewById(R.id.post_title);
 
             if(userName != null) {
@@ -64,14 +64,16 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             }
 
             if(postContent != null) {
-                Log.d(LOG_TAG,"Postcontent null değildir.");
+                Log.d(LOG_TAG, "Postcontent null değildir.");
                 DisplayMetrics displaymetrics = new DisplayMetrics();
                 ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displaymetrics);
                 int height = displaymetrics.widthPixels;
                 int width = displaymetrics.widthPixels;
+                Log.d(LOG_TAG,"HEIGHT: "+height+" WIDTH: "+width);
                 ViewGroup.LayoutParams layoutParams = postContent.getLayoutParams();
                 layoutParams.width = width;
                 layoutParams.height = height;
+                postContent.setLayoutParams(layoutParams);
                 postContent.setVisibility(View.VISIBLE);
                 MediaController mediaController = new MediaController(context);
                 mediaController.setAnchorView(postContent);
@@ -83,6 +85,7 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
 
             if(title != null) {
                 title.setText(post.getTitle());
+                //title.setHeight(postContent.getWidth()/7);
             }
 
         }

@@ -2,8 +2,10 @@ package com.getmuteapp.mute.videoupload;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.getmuteapp.mute.R;
+import com.getmuteapp.mute.home.MuteVideoView;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -35,11 +38,14 @@ public class UploadVideoActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = UploadVideoActivity.class.getSimpleName();
 
+    public static final String SHARED_PREFERENCES = "MUTE_SHARED_PREFERENCES";
+    public static final String SCREEN_WIDTH = "SCREEN_WIDTH";
+
     @Bind(R.id.container) ViewGroup container;
     @Bind(R.id.upload_button) Button uploadButton;
     @Bind(R.id.txtPercentage) TextView percentage;
     @Bind(R.id.progressBar)   ProgressBar progressBar;
-    @Bind(R.id.videoPreview)  VideoView videoView;
+    @Bind(R.id.videoPreview) MuteVideoView videoView;
 
     private Context context;
     private String filePath = null;
