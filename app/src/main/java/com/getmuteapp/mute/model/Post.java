@@ -4,6 +4,7 @@ package com.getmuteapp.mute.model;
 import android.net.Uri;
 
 public class Post {
+    private String title;
     private String userName;
     private String filePath;
     private int icon;
@@ -33,6 +34,14 @@ public class Post {
 
     public Uri getUri() {
         return uri;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
 }

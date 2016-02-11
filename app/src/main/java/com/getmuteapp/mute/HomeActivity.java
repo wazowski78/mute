@@ -19,7 +19,7 @@ import butterknife.OnClick;
 
 public class HomeActivity extends AppCompatActivity {
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
-    private static final int PERMISSION_REQUEST_CAMERA = 0;
+    private static final int PERMISSION_REQUEST_CAMERA_AND_AUDIO = 0;
 
     @Bind(R.id.go_video) Button goVideoButton;
     @Bind(R.id.go_login) Button goLoginButton;
@@ -35,12 +35,15 @@ public class HomeActivity extends AppCompatActivity {
     @OnClick(R.id.go_video)
     void onGoVideoClicked() {
         if (ContextCompat.checkSelfPermission(HomeActivity.this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(HomeActivity.this,Manifest.permission.RECORD_AUDIO) ==
                 PackageManager.PERMISSION_GRANTED) {
             goCaptureActivity();
         } else {
             ActivityCompat.requestPermissions(HomeActivity.this,
                     new String[]{
-                            Manifest.permission.CAMERA}, PERMISSION_REQUEST_CAMERA);
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.RECORD_AUDIO}, PERMISSION_REQUEST_CAMERA_AND_AUDIO);
         }
     }
 
@@ -65,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case PERMISSION_REQUEST_CAMERA: {
+            case PERMISSION_REQUEST_CAMERA_AND_AUDIO: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     goCaptureActivity();

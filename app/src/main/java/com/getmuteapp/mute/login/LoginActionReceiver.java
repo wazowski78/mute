@@ -32,7 +32,6 @@ public class LoginActionReceiver extends BroadcastReceiver {
         try {
             JSONObject responseJSON = new JSONObject(response);
             responseKey = responseJSON.getString("response");
-
         } catch(JSONException e) {
             e.printStackTrace();
         }

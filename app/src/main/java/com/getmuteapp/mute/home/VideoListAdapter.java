@@ -2,10 +2,12 @@ package com.getmuteapp.mute.home;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -51,6 +53,7 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             TextView userName = (TextView) view.findViewById(R.id.user_name);
             ImageView userProfilePic = (ImageView) view.findViewById(R.id.user_profile_pic);
             final VideoView postContent = (VideoView) view.findViewById(R.id.post_content);
+            TextView title = (TextView) view.findViewById(R.id.post_title);
 
             if(userName != null) {
                 userName.setText(post.getUserName());
@@ -62,6 +65,13 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
 
             if(postContent != null) {
                 Log.d(LOG_TAG,"Postcontent null değildir.");
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displaymetrics);
+                int height = displaymetrics.widthPixels;
+                int width = displaymetrics.widthPixels;
+                ViewGroup.LayoutParams layoutParams = postContent.getLayoutParams();
+                layoutParams.width = width;
+                layoutParams.height = height;
                 postContent.setVisibility(View.VISIBLE);
                 MediaController mediaController = new MediaController(context);
                 mediaController.setAnchorView(postContent);
@@ -69,6 +79,10 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
                 postContent.setVideoURI(post.getUri());
                 postContent.start();
 
+            }
+
+            if(title != null) {
+                title.setText(post.getTitle());
             }
 
         }

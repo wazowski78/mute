@@ -33,6 +33,8 @@ public class HomeScreenFragment extends ListFragment {
         posts = new ArrayList<Post>();
         Post post1 = new Post("post1","android.resource://"+getActivity().getPackageName()+"/raw/deneme");
         Post post2 = new Post("post2","android.resource://"+getActivity().getPackageName()+"/raw/deneme");
+        post1.setTitle("A beautiful mind");
+        post2.setTitle("Some other title");
 
         post1.setIcon(R.mipmap.ic_launcher);
         post2.setIcon(R.mipmap.ic_launcher);
