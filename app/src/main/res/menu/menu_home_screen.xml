@@ -1,0 +1,15 @@
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".home.HomeScreenActivity">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never"/>
+    <item android:id="@+id/action_search" android:icon="@drawable/search" android:title="Search"
+        android:orderInCategory="100" app:showAsAction="always"/>
+    <item android:id="@+id/action_add_friend" android:icon="@drawable/add_friend" android:title="@string/add_friend"
+        android:orderInCategory="100" app:showAsAction="always"/>
+    <item android:id="@+id/action_notifications" android:icon="@drawable/notification" android:title="Notifications"
+        android:orderInCategory="100" app:showAsAction="always"/>
+
+</menu>

@@ -1,5 +1,6 @@
 package com.getmuteapp.mute.home;
 
+
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,8 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
+
 
 import com.getmuteapp.mute.R;
 
@@ -32,6 +35,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setIcon(R.drawable.logo);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +52,27 @@ public class HomeScreenActivity extends AppCompatActivity {
             transaction.replace(R.id.homescreen_posts_container, fragment);
             transaction.commit();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_home_screen, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch(id) {
+
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void connectWebSocket() {

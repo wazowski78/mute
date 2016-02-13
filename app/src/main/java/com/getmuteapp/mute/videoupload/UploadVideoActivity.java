@@ -3,6 +3,9 @@ package com.getmuteapp.mute.videoupload;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -24,8 +27,12 @@ import net.gotev.uploadservice.UploadNotificationConfig;
 import net.gotev.uploadservice.UploadService;
 import net.gotev.uploadservice.UploadServiceBroadcastReceiver;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -137,23 +144,30 @@ public class UploadVideoActivity extends AppCompatActivity {
     }
 
     private void handleUpload() {
-        final String serverUrlString = "http://192.168.1.6:9000/upload";
+        final String serverUrlString = "http://192.168.1.4:9000/upload";
         final String paramNameString = "video";
 
         try {
-            final String filename = getFilename(filePath);
+            final String fileName = getFilename(filePath);
+            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(filePath, MediaStore.Images.Thumbnails.MINI_KIND);
+            storeImage(thumb);
+            HashMap<String,String> uploadFileMap = new HashMap<>();
+            uploadFileMap.put(fileName,filePath);
+            uploadFileMap.put(getFilename(getThumbnailPath(filePath)), getThumbnailPath(filePath));
 
-            String uploadID = new MultipartUploadRequest(context, serverUrlString)
-                    .addFileToUpload(filePath, paramNameString)
-                    .setNotificationConfig(getNotificationConfig(filename))
-                    .setCustomUserAgent("UserAgent")
-                    .setAutoDeleteFilesAfterSuccessfulUpload(true)
-                    .setUsesFixedLengthStreamingMode(false)
-                    .setMaxRetries(2)
-                    .startUpload();
+            for(Map.Entry<String,String> entry : uploadFileMap.entrySet()) {
+                String uploadID = new MultipartUploadRequest(context, serverUrlString)
+                        .addFileToUpload(entry.getValue(), paramNameString)
+                        .setNotificationConfig(getNotificationConfig(fileName))
+                        .setCustomUserAgent("UserAgent")
+                        .setAutoDeleteFilesAfterSuccessfulUpload(true)
+                        .setUsesFixedLengthStreamingMode(false)
+                        .setMaxRetries(2)
+                        .startUpload();
 
-            addUploadToList(uploadID,filename);
+                addUploadToList(uploadID, entry.getKey());
 
+            }
             // these are the different exceptions that may be thrown
         } catch (FileNotFoundException exc) {
             exc.printStackTrace();
@@ -164,6 +178,25 @@ public class UploadVideoActivity extends AppCompatActivity {
         }
     }
 
+    private void storeImage(Bitmap image) {
+
+        File pictureFile = new File(getThumbnailPath(filePath));
+        if (pictureFile == null) {
+            Log.d(LOG_TAG,
+                    "Error creating media file, check storage permissions: ");// e.getMessage());
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(pictureFile);
+            image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.d(LOG_TAG, "File not found: " + e.getMessage());
+        } catch (IOException e) {
+            Log.d(LOG_TAG, "Error accessing file: " + e.getMessage());
+        }
+    }
+
     private String getFilename(String filepath) {
         if (filepath == null)
             return null;
@@ -171,6 +204,22 @@ public class UploadVideoActivity extends AppCompatActivity {
         final String[] filepathParts = filepath.split("/");
 
         return filepathParts[filepathParts.length - 1];
+    }
+
+    private String getThumbnailPath(String filepath) {
+        if (filepath == null)
+            return null;
+
+        final String[] filepathParts = filepath.split("/");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < filepathParts.length -1;i++) {
+
+            sb.append(filepathParts[i]);
+            sb.append("/");
+        }
+        sb.append(getFilename(filepath).substring(0,getFilename(filepath).lastIndexOf(".")));
+        sb.append(".png");
+        return sb.toString();
     }
 
     private void addUploadToList(String uploadID, String filename) {
