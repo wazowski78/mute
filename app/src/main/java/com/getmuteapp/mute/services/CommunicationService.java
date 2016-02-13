@@ -7,11 +7,14 @@ import android.util.Log;
 
 import com.getmuteapp.mute.login.LoginActionReceiver;
 import com.getmuteapp.mute.login.LoginActivity;
+import com.getmuteapp.mute.login.SessionKeyActionReceiver;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -21,11 +24,13 @@ import java.net.URL;
 public class CommunicationService extends IntentService {
 
     private static final String LOG_TAG = CommunicationService.class.getSimpleName();
-    private static final String HOST = "http://192.168.1.2:9000";
+
     private static final String HOST_TAG = "HOST";
     private static final String DATA = "DATA";
 
+    public static final String HOST = "http://192.168.1.2:9000";
     public static final String ACTION_LOGIN_COMPLETED = "ACTION_LOGIN_COMPLETED";
+    public static final String ACTION_TAKE_SESSION_KEY_COMPLETED = "ACTION_TAKE_SESSION_KEY_COMPLETED";
 
     public CommunicationService(){ super("CommunicationService");}
 
@@ -50,6 +55,12 @@ public class CommunicationService extends IntentService {
                     loginBroadcastIntent.putExtra(LoginActionReceiver.LOGIN_RESPONSE,
                             postData(data,host+"/newUser"));
                     sendBroadcast(loginBroadcastIntent);
+                    break;
+                case LoginActionReceiver.ACTION_TAKE_SESSION_KEY:
+                    Intent takeSessionKeyBroadcastIntent = new Intent(ACTION_TAKE_SESSION_KEY_COMPLETED);
+                    takeSessionKeyBroadcastIntent.putExtra(SessionKeyActionReceiver.SESSION_KEY_RESPONSE,
+                            postData(data, host + "/login"));
+                    sendBroadcast(takeSessionKeyBroadcastIntent);
                     break;
             }
         }

@@ -20,6 +20,7 @@ import android.widget.VideoView;
 
 import com.getmuteapp.mute.R;
 import com.getmuteapp.mute.home.MuteVideoView;
+import com.getmuteapp.mute.services.CommunicationService;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -144,7 +145,7 @@ public class UploadVideoActivity extends AppCompatActivity {
     }
 
     private void handleUpload() {
-        final String serverUrlString = "http://192.168.1.4:9000/upload";
+        final String serverUrlString = CommunicationService.HOST+"/upload";
         final String paramNameString = "video";
 
         try {

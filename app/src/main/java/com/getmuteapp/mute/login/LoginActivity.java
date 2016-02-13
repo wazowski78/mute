@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.VideoView;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -57,6 +58,16 @@ public class LoginActivity extends AppCompatActivity {
         setClickOptions();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(AccessToken.getCurrentAccessToken() !=  null) {
+            facebookLoginButton.setVisibility(View.GONE);
+        }
+
+    }
+
     private void makeFullScreen() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -75,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
         previewVideo();
         facebookLoginButton = (LoginButton) findViewById(R.id.facebook_login_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+
     }
 
     private void previewVideo() {
