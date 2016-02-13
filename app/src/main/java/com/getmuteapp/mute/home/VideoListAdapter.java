@@ -56,6 +56,18 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
             TextView title = (TextView) view.findViewById(R.id.post_title);
             TextView numberOfAnswers = (TextView) view.findViewById(R.id.post_number_of_answers);
             TextView date = (TextView) view.findViewById(R.id.post_date);
+            final MuteVideoImageView thumbnail = (MuteVideoImageView) view.findViewById(R.id.thumbnail);
+
+            if(thumbnail != null) {
+                thumbnail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        thumbnail.setVisibility(View.GONE);
+                        postContent.setVisibility(View.VISIBLE);
+                        postContent.start();
+                    }
+                });
+            }
 
             if(userName != null) {
                 userName.setText(post.getUserName());
@@ -82,7 +94,7 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
                 layoutParams.width = width;
                 layoutParams.height = height;
                 postContent.setLayoutParams(layoutParams);
-                postContent.setVisibility(View.VISIBLE);
+                //postContent.setVisibility(View.VISIBLE);
                 MediaController mediaController = new MediaController(context);
                 mediaController.setAnchorView(postContent);
                 mediaController.setMediaPlayer(postContent);
@@ -93,12 +105,20 @@ public class VideoListAdapter extends ArrayAdapter<Post> {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         VideoView mView = (VideoView) v;
-                        if(mView.isPlaying()) {
+                        if (mView.isPlaying()) {
                             mView.pause();
                         } else {
                             mView.start();
                         }
                         return false;
+                    }
+                });
+
+                postContent.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        postContent.setVisibility(View.GONE);
+                        thumbnail.setVisibility(View.VISIBLE);
                     }
                 });
 
