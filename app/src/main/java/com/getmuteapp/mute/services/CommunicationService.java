@@ -85,9 +85,7 @@ public class CommunicationService extends IntentService {
                 //While joining the Cookies, use ',' or ';' as needed. Most of the server are using ';'
                 Log.d(LOG_TAG,"IF");
                 con.setRequestProperty("Cookie",
-                        "PLAY_SESSION="+cookieManager.getCookieStore().getCookies().get(0).getValue());
-
-                //TextUtils.join(";", cookieManager.getCookieStore().getCookies())
+                        TextUtils.join(";", cookieManager.getCookieStore().getCookies()));
             }
             con.setDoOutput(true);
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
@@ -105,23 +103,12 @@ public class CommunicationService extends IntentService {
                     Log.d(LOG_TAG,cookieManager.getCookieStore().getCookies().get(0).getValue());
                 }
             }
-            /*
-            */
 
             int responseCode = con.getResponseCode();
             Log.d("RESPONSECODE", responseCode + "");
 
-            switch (responseCode) {
-                case 400:
-                    return "{\"response\":\"BadRequest\"}";
-                case 401:
-                    return "{\"response\":\"Unauthorized\"}";
-                case 500:
-                    return "{\"response\":\"InternalServer\"}";
-                default:
-                    Log.d(LOG_TAG,"Undefined response code");
-                    break;
-
+            if(responseCode != 200) {
+                return null;
             }
 
             BufferedReader in = new BufferedReader(
@@ -147,7 +134,7 @@ public class CommunicationService extends IntentService {
             e.printStackTrace();
         }
 
-        return returnString;
+        return returnString.isEmpty() ? LoginActionReceiver.SUCCESS_EMPTY : returnString;
     }
 
 

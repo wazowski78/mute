@@ -25,6 +25,8 @@ public class HomeActivity extends AppCompatActivity {
     @Bind(R.id.go_login) Button goLoginButton;
     @Bind(R.id.go_home_screen) Button goHomeScreenButton;
 
+    //TODO: Contractor gibi bir class oluşturup final valueları ordan çağırmaya ne dersin.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
