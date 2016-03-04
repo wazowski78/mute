@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
 
         if(AccessToken.getCurrentAccessToken() !=  null) {
-            facebookLoginButton.setVisibility(View.GONE);
+            //facebookLoginButton.setVisibility(View.GONE);
         }
 
     }
@@ -166,6 +166,8 @@ public class LoginActivity extends AppCompatActivity {
                     //friendsResponseList is a one-element List (I guess)
                     GraphResponse friendsResponse = friendsResponseList.get(0);
                     JSONObject friendsResponseJSONObject = friendsResponse.getJSONObject();
+
+                    //TODO: Json object formatında ekleme yap!
 
                     JSONArray friendsArray = friendsResponseJSONObject.getJSONArray("data");
                     StringBuilder sb = new StringBuilder();

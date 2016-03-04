@@ -62,6 +62,13 @@
                 <action android:name="ACTION_LOGIN_COMPLETED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".login.SessionKeyActionReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ACTION_TAKE_SESSION_KEY_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".home.HomeScreenActivity"

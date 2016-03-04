@@ -3,16 +3,12 @@ package com.getmuteapp.mute.login;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.webkit.CookieManager;
+import android.util.Log;
 
-import com.getmuteapp.mute.services.CommunicationService;
+import com.getmuteapp.mute.home.HomeScreenActivity;
 
-import java.net.CookieHandler;
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class SessionKeyActionReceiver extends BroadcastReceiver {
 
@@ -23,25 +19,35 @@ public class SessionKeyActionReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        CookieManager cookieManager = android.webkit.CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        CookieStore cookieStore = ((java.net.CookieManager) CookieHandler.getDefault()).getCookieStore();
-        URI baseUri = null;
+        String response = intent.getStringExtra(SESSION_KEY_RESPONSE);
+        String action = "";
+
         try {
-            baseUri = new URI(CommunicationService.HOST);
-        } catch(URISyntaxException e) {
+            JSONObject responseJSON = new JSONObject(response);
+            action = responseJSON.getString("response");
+        } catch(JSONException e) {
             e.printStackTrace();
         }
 
-        List<HttpCookie> cookies = cookieStore.get(baseUri);
-        String url = baseUri.toString();
-
-        for (HttpCookie cookie : cookies) {
-            String setCookie = new StringBuilder(cookie.toString())
-                    .append("; domain=").append(cookie.getDomain())
-                    .append("; path=").append(cookie.getPath())
-                    .toString();
-            cookieManager.setCookie(url, setCookie);
+        if(action != null) {
+            switch (action) {
+                case LoginActionReceiver.SUCCESS:
+                    Intent i = new Intent(context, HomeScreenActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(i);
+                    break;
+                case LoginActionReceiver.BAD_REQUEST:
+                    break;
+                case LoginActionReceiver.UNAUTHORIZED:
+                    break;
+                case LoginActionReceiver.INTERNAL_SERVER:
+                    break;
+                default:
+                    Log.d(LOG_TAG,"Demek ki Ulaş bana haber vermeden bişey döndü!");
+                    break;
+            }
+        } else {
+            Log.d(LOG_TAG,"action null gelmiş");
         }
 
     }

@@ -21,6 +21,7 @@ import android.widget.VideoView;
 import com.getmuteapp.mute.R;
 import com.getmuteapp.mute.home.MuteVideoView;
 import com.getmuteapp.mute.services.CommunicationService;
+import com.getmuteapp.mute.services.SessionManager;
 import com.getmuteapp.mute.videocapture.CaptureVideoActivity;
 
 import net.gotev.uploadservice.MultipartUploadRequest;
@@ -164,6 +165,7 @@ public class UploadVideoActivity extends AppCompatActivity {
                         .setAutoDeleteFilesAfterSuccessfulUpload(true)
                         .setUsesFixedLengthStreamingMode(false)
                         .setMaxRetries(2)
+                        .addHeader("Cookie","PLAY_SESSION="+ SessionManager.getCookieManager().getCookieStore().getCookies().get(0).getValue())
                         .startUpload();
 
                 addUploadToList(uploadID, entry.getKey());

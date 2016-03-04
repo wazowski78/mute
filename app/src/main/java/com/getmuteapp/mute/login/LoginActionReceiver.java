@@ -17,9 +17,11 @@ import org.json.JSONObject;
 public class LoginActionReceiver extends BroadcastReceiver {
 
     private static final String LOG_TAG = LoginActionReceiver.class.getSimpleName();
-    private static final String SUCCESS = "success";
-    private static final String INTERNAL_SERVER = "InternalServer";
-    private static final String BAD_REQUEST = "BadRequest";
+
+    public static final String SUCCESS = "success";
+    public static final String INTERNAL_SERVER = "InternalServer";
+    public static final String BAD_REQUEST = "BadRequest";
+    public static final String UNAUTHORIZED = "Unautjorized";
 
     public static final String LOGIN_RESPONSE = "LOGIN_RESPONSE";
     public static final String SESSION_SHARED_PREFERENCES = "SESSION_SHARED_PREFERENCES";
@@ -49,7 +51,12 @@ public class LoginActionReceiver extends BroadcastReceiver {
                     SharedPreferences.Editor editor = sp.edit();
                     editor.putString(SP_USER_ID, AccessToken.getCurrentAccessToken().getUserId());
                     editor.apply();
-                    CommunicationService.startActionPostServer(context, sp.getString(SP_USER_ID,null), ACTION_TAKE_SESSION_KEY);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("{\"userId\":\"");
+                    sb.append(sp.getString(SP_USER_ID,null));
+                    sb.append("\"}");
+
+                    CommunicationService.startActionPostServer(context,sb.toString() , ACTION_TAKE_SESSION_KEY);
                     break;
                 case INTERNAL_SERVER:
                     break;
